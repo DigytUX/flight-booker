@@ -5,11 +5,15 @@ import { LocalizationProvider } from '@mui/x-date-pickers/LocalizationProvider';
 import { DateTimePicker } from '@mui/x-date-pickers/DateTimePicker';
 import ToggleButton from '@mui/material/ToggleButton';
 import ToggleButtonGroup from '@mui/material/ToggleButtonGroup';
-import {Autocomplete, Box, Container, Grid, Typography, TextField} from '@mui/material';
+import {Autocomplete, Box, Button, Container, Grid, Typography, TextField, OutlinedInput} from '@mui/material';
 
 function App() {
   const [value, setValue] = React.useState(false);
   const [tripType, setTripType] = React.useState('round-trip');
+  const [destination, setDestination] = React.useState(0)
+  const [arrival, setArrival] = React.useState(0)
+  const [guests, setGuests] = React.useState(0)
+
 
   const handleChange = (event, option) => {
     setTripType(option);
@@ -25,6 +29,26 @@ function App() {
     { label: "Schindler's List", year: 1993 },
     { label: 'Pulp Fiction', year: 1994 },
   ]
+
+  const searchParams = {
+    type:tripType,
+    destination:destination,
+    arrival:arrival,
+    guests:guests
+  }
+
+  const handleDestinationChange = (event, value) => {
+    console.log('searchParams', searchParams)
+    setDestination(value.label)
+  }
+
+  const handleArrivalChange = (event, value) => {
+    setArrival(value.label)
+  }
+
+  const handleGuests = (event) => {
+    setGuests(event.target.value)
+  }
 
   return (
     <Container maxWidth="sm">
@@ -61,24 +85,33 @@ function App() {
             </Box>
           </Grid>
           <Grid item xs={6}>
+            <Typography variant="h5" component="h1">Destination:{destination}</Typography>
             <Autocomplete
-              disablePortal
-              id="combo-box-demo"
+              id="destination"
+              onChange={handleDestinationChange}
               options={airports}
               sx={{ width: '100%' }}
-              renderInput={(params) => <TextField {...params} label="Destination Airport" />}
+              renderInput={(params) => 
+              <TextField 
+                {...params} 
+                label="Destination Airport" 
+              />}
             />
           </Grid>
           <Grid item xs={6}>
+            <Typography variant="h5" component="h1">Arrival:{arrival}</Typography>
             <Autocomplete
-              disablePortal
-              id="combo-box-demo"
+              onChange={handleArrivalChange}
+              id="arrival"
               options={airports}
               sx={{ width: '100%' }}
-              renderInput={(params) => <TextField {...params} label="Arrival airport" />}
+              renderInput={(params) => 
+              <TextField {...params} 
+                label="Arrival airport" 
+              />}
             />
           </Grid>
-          <Grid item xs={6}>
+          <Grid item xs={4}>
           <LocalizationProvider dateAdapter={AdapterDayjs}>
             <DateTimePicker
               inputFormat="dd.mm.yyyy"
@@ -99,7 +132,7 @@ function App() {
             />
           </LocalizationProvider>
           </Grid>
-          <Grid item xs={6}>
+          <Grid item xs={4}>
             <LocalizationProvider dateAdapter={AdapterDayjs}>
               <DateTimePicker
                 inputFormat="dd.mm.yyyy"
@@ -119,6 +152,22 @@ function App() {
                 }}
               />
             </LocalizationProvider>
+          </Grid>
+          <Grid item xs={4}>
+            <OutlinedInput 
+            onChange={handleGuests}
+              sx={{width:'100%'}} 
+              value={guests}
+              type='number' 
+              inputProps={{
+                placeholder: "Guests?"
+              }}
+            />
+          </Grid>
+          <Grid item xs={12}>
+            <Box>
+              <Button sx={{width:'100%', py:2}} variant="contained" color="primary">Search</Button>
+            </Box>
           </Grid>
         </Grid>
       </Box>
